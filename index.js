@@ -7,6 +7,15 @@
 const express = require("express");
 const mongoose = require("mongoose");
 require("dotenv").config();
+const cors = require("cors");
+
+const {
+  getAll,
+  getOneWork,
+  createWork,
+  removeWork,
+  updateWork,
+} = require("./controllers/JobControllers");
 
 mongoose
   .connect(process.env.MONGODB_URI)
@@ -17,10 +26,17 @@ const app = express();
 const PORT = 9999;
 
 app.use(express.json());
+app.use(cors());
 
 app.get("/", (req, res) => {
   res.send(`Hello Woorld`);
 });
+
+app.get(`/items`, getAll);
+app.get(`/items/:id`, getOneWork);
+app.post(`/items`, createWork);
+app.delete("/items/:id", removeWork);
+app.patch("/items/:id", updateWork);
 
 app.listen(PORT, (err) => {
   if (err) {
