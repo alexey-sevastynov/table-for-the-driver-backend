@@ -29,7 +29,38 @@ app.use(express.json());
 app.use(cors());
 
 app.get("/", (req, res) => {
-  res.send(`Hello Woorld`);
+  res.send(`<!DOCTYPE html>
+  <html>
+  <head>
+      <title>api driver</title>
+      <meta charset="utf-8" />
+  </head>
+  <body>
+      <h1>Method api:</h1>
+      <pre>GET: "https://api-table-for-the-driver.vercel.app/jobs" ---> get all list items</pre>
+      <pre>GET: "https://api-table-for-the-driver.vercel.app/jobs/:id" ---> get item</pre>
+      <pre>POST: "https://api-table-for-the-driver.vercel.app/jobs/" ---> set item</pre>
+      <pre>
+        {
+            id: req.body.id,
+            day: req.body.day,
+            month: req.body.month,
+            year: req.body.year,
+            customer: req.body.customer,
+            route: req.body.route,
+            hours: req.body.hours,
+            km: req.body.km,
+            income: req.body.income,
+            expenditure: req.body.expenditure,
+            status: req.body.status,
+        }
+      </pre>
+      <pre>PATCH: "https://api-table-for-the-driver.vercel.app/jobs/:id" ---> edit item</pre>
+      <pre>DELETE: "https://api-table-for-the-driver.vercel.app/jobs/:id" ---> edit item</pre>
+     
+   
+  </body>
+  <html>`);
 });
 
 app.get(`/jobs`, getAll);
