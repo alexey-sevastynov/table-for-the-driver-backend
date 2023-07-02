@@ -32,11 +32,11 @@ app.get("/", (req, res) => {
   res.send(`Hello Woorld`);
 });
 
-app.get(`/items`, getAll);
-app.get(`/items/:id`, getOneWork);
-app.post(`/items`, createWork);
-app.delete("/items/:id", removeWork);
-app.patch("/items/:id", updateWork);
+app.get(`/jobs`, getAll);
+app.get(`/jobs/:id`, getOneWork);
+app.post(`/jobs`, createWork);
+app.delete("/jobs/:id", removeWork);
+app.patch("/jobs/:id", updateWork);
 
 app.listen(PORT, (err) => {
   if (err) {
