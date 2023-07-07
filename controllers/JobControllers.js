@@ -39,6 +39,7 @@ const createWork = async (req, res) => {
       km: req.body.km,
       income: req.body.income,
       expenditure: req.body.expenditure,
+      description: req.body.description,
       status: req.body.status,
     });
 
@@ -56,13 +57,38 @@ const removeWork = async (req, res) => {
     const workId = req.params.id;
 
     Job.findOneAndDelete({ _id: workId })
-      .then((doc) => res.json(doc))
+      .then((doc) => res.json({ ...doc, message: `delete id:${workId}` }))
       .catch((err) =>
-        res.status(500).json({ message: "failed to delete work" })
+        res.status(500).json({ message: "failed to delete work " })
       );
   } catch (error) {
     console.log(error);
     res.status(500).json({ massage: "failed to delete work" });
+  }
+};
+
+const removeWorkDay = async (req, res) => {
+  try {
+    const workDay = req.params.day;
+    const workMonth = req.params.month;
+    const workYear = req.params.year;
+    // const delDay = req.params;
+    // const { day, month, year } = req.params;
+
+    Job.deleteMany({ day: workDay, month: workMonth, year: workYear })
+      .then((doc) =>
+        res.json({
+          ...doc,
+          success: true,
+          message: `delete day: day ${workDay}, month ${workMonth}, year ${workYear}`,
+        })
+      )
+      .catch((err) =>
+        res.status(500).json({ message: "failed to delete work day" })
+      );
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ massage: "failed to delete work day" });
   }
 };
 
@@ -83,6 +109,7 @@ const updateWork = async (req, res) => {
         km: req.body.km,
         income: req.body.income,
         expenditure: req.body.expenditure,
+        description: req.body.description,
         status: req.body.status,
       }
     )
@@ -98,4 +125,11 @@ const updateWork = async (req, res) => {
   }
 };
 
-module.exports = { getAll, getOneWork, createWork, removeWork, updateWork };
+module.exports = {
+  getAll,
+  getOneWork,
+  createWork,
+  removeWork,
+  updateWork,
+  removeWorkDay,
+};

@@ -36,6 +36,7 @@ const JobSchema = new Schema(
     },
     income: Number,
     expenditure: Number,
+    description: String,
     status: {
       type: Number, // 0 | 1 | 2 | 3
       required: true,

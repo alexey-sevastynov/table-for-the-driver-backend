@@ -15,6 +15,7 @@ const {
   createWork,
   removeWork,
   updateWork,
+  removeWorkDay,
 } = require("./controllers/JobControllers");
 
 mongoose
@@ -56,7 +57,8 @@ app.get("/", (req, res) => {
         }
       </pre>
       <pre>PATCH: "https://api-table-for-the-driver.vercel.app/jobs/:id" ---> edit item</pre>
-      <pre>DELETE: "https://api-table-for-the-driver.vercel.app/jobs/:id" ---> edit item</pre>
+      <pre>DELETE: "https://api-table-for-the-driver.vercel.app/jobs/:id" ---> delete item</pre>
+      <pre>DELETE: "https://api-table-for-the-driver.vercel.app/jobs/allDay/:day/:month/:year" ---> delete items all day</pre>
      
    
   </body>
@@ -67,6 +69,7 @@ app.get(`/jobs`, getAll);
 app.get(`/jobs/:id`, getOneWork);
 app.post(`/jobs`, createWork);
 app.delete("/jobs/:id", removeWork);
+app.delete("/jobs/allDay/:day/:month/:year", removeWorkDay);
 app.patch("/jobs/:id", updateWork);
 
 app.listen(PORT, (err) => {
