@@ -17,6 +17,13 @@ const {
   updateWork,
   removeWorkDay,
 } = require("./controllers/JobControllers");
+const {
+  getAllOptions,
+  createOption,
+  getOneOption,
+  removeOption,
+  updateOption,
+} = require("./controllers/OptionControllers");
 
 mongoose
   .connect(process.env.MONGODB_URI)
@@ -37,7 +44,7 @@ app.get("/", (req, res) => {
       <meta charset="utf-8" />
   </head>
   <body>
-      <h1>Method api:</h1>
+      <h1>Method api JOBS:</h1>
       <pre>GET: "https://api-table-for-the-driver.vercel.app/jobs" ---> get all list items</pre>
       <pre>GET: "https://api-table-for-the-driver.vercel.app/jobs/:id" ---> get item</pre>
       <pre>POST: "https://api-table-for-the-driver.vercel.app/jobs/" ---> set item</pre>
@@ -60,6 +67,21 @@ app.get("/", (req, res) => {
       <pre>DELETE: "https://api-table-for-the-driver.vercel.app/jobs/:id" ---> delete item</pre>
       <pre>DELETE: "https://api-table-for-the-driver.vercel.app/jobs/allDay/:day/:month/:year" ---> delete items all day</pre>
      
+
+        <h1>Method api OPIONS:</h1>
+      <pre>GET: "https://api-table-for-the-driver.vercel.app/options" ---> get all list items</pre>
+      <pre>GET: "https://api-table-for-the-driver.vercel.app/options/:id" ---> get item</pre>
+      <pre>POST: "https://api-table-for-the-driver.vercel.app/options/" ---> set item</pre>
+      <pre>
+        {
+            customer: req.body.customer,
+            hour: req.body.hour,
+            km: req.body.km,
+        }
+      </pre>
+      <pre>PATCH: "https://api-table-for-the-driver.vercel.app/options/:id" ---> edit item</pre>
+      <pre>DELETE: "https://api-table-for-the-driver.vercel.app/options/:id" ---> delete item</pre>
+     
    
   </body>
   <html>`);
@@ -71,6 +93,12 @@ app.post(`/jobs`, createWork);
 app.delete("/jobs/:id", removeWork);
 app.delete("/jobs/allDay/:day/:month/:year", removeWorkDay);
 app.patch("/jobs/:id", updateWork);
+
+app.get(`/options`, getAllOptions);
+app.get("/options/:id", getOneOption);
+app.post("/options", createOption);
+app.delete("/options/:id", removeOption);
+app.patch("/options/:id", updateOption);
 
 app.listen(PORT, (err) => {
   if (err) {
