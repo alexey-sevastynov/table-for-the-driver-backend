@@ -24,6 +24,10 @@ const {
   removeOption,
   updateOption,
 } = require("./controllers/OptionControllers");
+const {
+  updateSalary,
+  createSalary,
+} = require("./controllers/SalaryControllers");
 
 mongoose
   .connect(process.env.MONGODB_URI)
@@ -82,7 +86,17 @@ app.get("/", (req, res) => {
       <pre>PATCH: "https://api-table-for-the-driver.vercel.app/options/:id" ---> edit item</pre>
       <pre>DELETE: "https://api-table-for-the-driver.vercel.app/options/:id" ---> delete item</pre>
      
-   
+      <h1>Method api SALARIES:</h1>
+
+      <pre>PATCH: "https://api-table-for-the-driver.vercel.app/salaries/:id" ---> edit item</pre>
+      <pre>  
+      id==='64ad672639cd0103a96fac57';
+     {
+        percent: req.body.percent,
+        rate: req.body.rate,
+      }
+      </pre>
+
   </body>
   <html>`);
 });
@@ -99,6 +113,8 @@ app.get("/options/:id", getOneOption);
 app.post("/options", createOption);
 app.delete("/options/:id", removeOption);
 app.patch("/options/:id", updateOption);
+
+app.patch("/salaries/:id", updateSalary);
 
 app.listen(PORT, (err) => {
   if (err) {
