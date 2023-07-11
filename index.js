@@ -26,7 +26,7 @@ const {
 } = require("./controllers/OptionControllers");
 const {
   updateSalary,
-  createSalary,
+  getOneSalary,
 } = require("./controllers/SalaryControllers");
 
 mongoose
@@ -114,6 +114,7 @@ app.post("/options", createOption);
 app.delete("/options/:id", removeOption);
 app.patch("/options/:id", updateOption);
 
+app.get("/salaries/:id", getOneSalary);
 app.patch("/salaries/:id", updateSalary);
 
 app.listen(PORT, (err) => {
