@@ -11,16 +11,5 @@
       "src": "/(.*)",
       "dest": "/"
     }
-  ],
-  "functions": {
-    "api/index.js": {
-      "runtime": "nodejs14.x",
-      "events": [
-        {
-          "schedule": "cron(*/1 * * * *)",
-          "name": "check-mongodb"
-        }
-      ]
-    }
-  }
+  ]
 }

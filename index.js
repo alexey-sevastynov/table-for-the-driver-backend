@@ -13,6 +13,7 @@ const cors = require("cors");
 
 // const TelegramBot = require("node-telegram-bot-api");
 const schedule = require("node-schedule");
+
 const https = require("https");
 
 const {
@@ -35,8 +36,8 @@ const {
   getOneSalary,
 } = require("./controllers/SalaryControllers");
 
-const chatId = process.env.CHAT_ID;
-const sentNotifications = new Set();
+// const chatId = process.env.CHAT_ID;
+// const sentNotifications = new Set();
 
 // mongoose
 //   .connect(process.env.MONGODB_URI, { useNewUrlParser: true })

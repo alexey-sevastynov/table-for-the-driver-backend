@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
-const schedule = require("node-schedule");
+const cron = require("node-cron");
 require("dotenv").config();
 const TelegramBot = require("node-telegram-bot-api");
 
@@ -19,7 +19,7 @@ mongoose
     const sentNotifications = new Set();
 
     // Run a schedule that will check the databases every minute
-    const runScheduledTask = schedule.scheduleJob("*/1 * * * *", async () => {
+    cron.schedule("*/1 * * * *", async () => {
       const utcTime = new Date();
       const localTime = new Date(
         utcTime.toLocaleString("en-US", { timeZone: "Europe/Kiev" })
