@@ -44,8 +44,7 @@ mongoose
     const collection = db.collection("events");
 
     // Run a schedule that will check the databases every minute
-    // const runScheduledTask = schedule.scheduleJob("*/1 * * * *", async () => {
-    const runScheduledTask = async () => {
+    const runScheduledTask = schedule.scheduleJob("*/1 * * * *", async () => {
       const utcTime = new Date();
       const localTime = new Date(
         utcTime.toLocaleString("en-US", { timeZone: "Europe/Kiev" })
@@ -67,9 +66,7 @@ mongoose
           sentNotifications.add(event._id.toString());
         }
       });
-    };
-
-    runScheduledTask();
+    });
   })
   .catch((err) => console.log("DB error:", err));
 
