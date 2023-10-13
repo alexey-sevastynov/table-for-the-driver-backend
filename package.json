@@ -19,6 +19,8 @@
     "express": "^4.18.2",
     "express-validator": "^7.0.1",
     "mongoose": "^7.3.1",
+    "node-schedule": "^2.1.1",
+    "node-telegram-bot-api": "^0.63.0",
     "nodemon": "^2.0.22"
   }
 }
