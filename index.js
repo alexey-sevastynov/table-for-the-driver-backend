@@ -44,7 +44,8 @@ mongoose
     const collection = db.collection("events");
 
     // Run a schedule that will check the databases every minute
-    const j = schedule.scheduleJob("*/1 * * * *", async () => {
+    // const runScheduledTask = schedule.scheduleJob("*/1 * * * *", async () => {
+    const runScheduledTask = async () => {
       const utcTime = new Date();
       const localTime = new Date(
         utcTime.toLocaleString("en-US", { timeZone: "Europe/Kiev" })
@@ -66,7 +67,9 @@ mongoose
           sentNotifications.add(event._id.toString());
         }
       });
-    });
+    };
+
+    runScheduledTask();
   })
   .catch((err) => console.log("DB error:", err));
 
@@ -153,40 +156,6 @@ app.patch("/options/:id", updateOption);
 app.get("/salaries/:id", getOneSalary);
 app.patch("/salaries/:id", updateSalary);
 
-app.get("/events", async (req, res) => {
-  try {
-    const db = mongoose.connection;
-    const collection = db.collection("events");
-
-    // Вставьте код, который находится в вашем расписании, здесь
-    const utcTime = new Date();
-    const localTime = new Date(
-      utcTime.toLocaleString("en-US", { timeZone: "Europe/Kiev" })
-    );
-    localTime.setMinutes(localTime.getMinutes() + 60); // One hour ahead
-
-    console.log(localTime, localTime);
-    const events = await collection
-      .find({ dateStart: { $gte: localTime } })
-      .toArray();
-
-    events.forEach((event) => {
-      if (!sentNotifications.has(event._id.toString())) {
-        console.log(event.dateStart);
-        const message = `reminders:  - ${event._id}, ${event.dateStart}`;
-        bot.sendMessage(chatId, message);
-
-        sentNotifications.add(event._id.toString());
-      }
-    });
-
-    res.send("Scheduled task executed successfully.");
-  } catch (error) {
-    console.error("Error:", error);
-    res.status(500).send("Internal Server Error");
-  }
-});
-
 app.listen(PORT, (err) => {
   if (err) {
     return console.log(`Error! ${err}`);
@@ -221,8 +190,6 @@ function scheduleNotification(chatId, message, date) {
     console.log("The specified date and time have already passed.");
   }
 }
-
-// Пример отправки уведомления
 
 // sendNotification(chatId, "application development");
 
