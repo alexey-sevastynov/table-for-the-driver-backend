@@ -167,12 +167,18 @@ app.get("/events", async (req, res) => {
       })
       .toArray();
 
+    // events.forEach((event) => {
+    //   if (!sentNotifications.has(event._id.toString())) {
+    //     const message = `reminders:  - ${event._id}, ${event.dateStart}`;
+    //     console.log(message);
+    //     bot.sendMessage(chatId, message);
+    //     sentNotifications.add(event._id.toString());
+    //   }
+    // });
     events.forEach((event) => {
-      if (!sentNotifications.has(event._id.toString())) {
-        const message = `reminders:  - ${event._id}, ${event.dateStart}`;
-        bot.sendMessage(chatId, message);
-        sentNotifications.add(event._id.toString());
-      }
+      const message = `reminders:  - ${event._id}, ${event.dateStart}`;
+      console.log(message);
+      bot.sendMessage(chatId, message);
     });
 
     res.status(200).send("Task executed successfully");
