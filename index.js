@@ -153,7 +153,7 @@ app.patch("/options/:id", updateOption);
 app.get("/salaries/:id", getOneSalary);
 app.patch("/salaries/:id", updateSalary);
 
-app.get("/schedule-task", async (req, res) => {
+app.get("/events", async (req, res) => {
   const utcTime = new Date();
   const localTime = new Date(
     utcTime.toLocaleString("en-US", { timeZone: "Europe/Kiev" })
