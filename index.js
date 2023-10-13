@@ -176,8 +176,8 @@ app.get("/events", async (req, res) => {
     //   }
     // });
     events.forEach((event) => {
-      const message = `reminders:  - ${event._id}, ${event.dateStart}`;
-      console.log(message);
+      const message = `text wrote bot: ${event.title} (date: ${event.dateStart})`;
+
       bot.sendMessage(chatId, message);
     });
 
