@@ -33,6 +33,7 @@ const {
 } = require("./controllers/SalaryControllers");
 
 const chatId = process.env.CHAT_ID;
+const sentNotifications = new Set();
 
 mongoose
   .connect(process.env.MONGODB_URI, { useNewUrlParser: true })
@@ -41,8 +42,6 @@ mongoose
 
     const db = client.connection;
     const collection = db.collection("events");
-
-    const sentNotifications = new Set();
 
     // Run a schedule that will check the databases every minute
     const j = schedule.scheduleJob("*/1 * * * *", async () => {
@@ -153,6 +152,30 @@ app.patch("/options/:id", updateOption);
 
 app.get("/salaries/:id", getOneSalary);
 app.patch("/salaries/:id", updateSalary);
+
+app.get("/schedule-task", async (req, res) => {
+  const utcTime = new Date();
+  const localTime = new Date(
+    utcTime.toLocaleString("en-US", { timeZone: "Europe/Kiev" })
+  );
+  localTime.setMinutes(localTime.getMinutes() + 60); // One hour ahead
+
+  const events = await collection
+    .find({ dateStart: { $gte: localTime } })
+    .toArray();
+
+  events.forEach((event) => {
+    if (!sentNotifications.has(event._id.toString())) {
+      console.log(event.dateStart);
+      const message = `reminders:  - ${event._id}, ${event.dateStart}`;
+      bot.sendMessage(chatId, message);
+
+      sentNotifications.add(event._id.toString());
+    }
+  });
+
+  res.send("Scheduled task executed successfully.");
+});
 
 app.listen(PORT, (err) => {
   if (err) {
