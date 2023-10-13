@@ -154,27 +154,37 @@ app.get("/salaries/:id", getOneSalary);
 app.patch("/salaries/:id", updateSalary);
 
 app.get("/events", async (req, res) => {
-  const utcTime = new Date();
-  const localTime = new Date(
-    utcTime.toLocaleString("en-US", { timeZone: "Europe/Kiev" })
-  );
-  localTime.setMinutes(localTime.getMinutes() + 60); // One hour ahead
+  try {
+    const db = mongoose.connection;
+    const collection = db.collection("events");
 
-  const events = await collection
-    .find({ dateStart: { $gte: localTime } })
-    .toArray();
+    // Вставьте код, который находится в вашем расписании, здесь
+    const utcTime = new Date();
+    const localTime = new Date(
+      utcTime.toLocaleString("en-US", { timeZone: "Europe/Kiev" })
+    );
+    localTime.setMinutes(localTime.getMinutes() + 60); // One hour ahead
 
-  events.forEach((event) => {
-    if (!sentNotifications.has(event._id.toString())) {
-      console.log(event.dateStart);
-      const message = `reminders:  - ${event._id}, ${event.dateStart}`;
-      bot.sendMessage(chatId, message);
+    console.log(localTime, localTime);
+    const events = await collection
+      .find({ dateStart: { $gte: localTime } })
+      .toArray();
 
-      sentNotifications.add(event._id.toString());
-    }
-  });
+    events.forEach((event) => {
+      if (!sentNotifications.has(event._id.toString())) {
+        console.log(event.dateStart);
+        const message = `reminders:  - ${event._id}, ${event.dateStart}`;
+        bot.sendMessage(chatId, message);
 
-  res.send("Scheduled task executed successfully.");
+        sentNotifications.add(event._id.toString());
+      }
+    });
+
+    res.send("Scheduled task executed successfully.");
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).send("Internal Server Error");
+  }
 });
 
 app.listen(PORT, (err) => {
