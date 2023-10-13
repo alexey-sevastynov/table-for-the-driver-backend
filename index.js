@@ -4,13 +4,16 @@
 // 4. npm i mongoose
 // 5. npm i dotenv . Hide password the cluster, mongodb
 
+const router = require("./eventsRouter");
+
 const express = require("express");
 const mongoose = require("mongoose");
 require("dotenv").config();
 const cors = require("cors");
 
-const TelegramBot = require("node-telegram-bot-api");
+// const TelegramBot = require("node-telegram-bot-api");
 const schedule = require("node-schedule");
+const https = require("https");
 
 const {
   getAll,
@@ -35,40 +38,40 @@ const {
 const chatId = process.env.CHAT_ID;
 const sentNotifications = new Set();
 
-mongoose
-  .connect(process.env.MONGODB_URI, { useNewUrlParser: true })
-  .then((client) => {
-    console.log("DB OK!");
+// mongoose
+//   .connect(process.env.MONGODB_URI, { useNewUrlParser: true })
+//   .then((client) => {
+//     console.log("DB OK!");
 
-    const db = client.connection;
-    const collection = db.collection("events");
+//     const db = client.connection;
+//     const collection = db.collection("events");
 
-    // Run a schedule that will check the databases every minute
-    const runScheduledTask = schedule.scheduleJob("*/1 * * * *", async () => {
-      const utcTime = new Date();
-      const localTime = new Date(
-        utcTime.toLocaleString("en-US", { timeZone: "Europe/Kiev" })
-      );
-      localTime.setMinutes(localTime.getMinutes() + 60); // One hour ahead
+//     // Run a schedule that will check the databases every minute
+//     const runScheduledTask = schedule.scheduleJob("*/1 * * * *", async () => {
+//       const utcTime = new Date();
+//       const localTime = new Date(
+//         utcTime.toLocaleString("en-US", { timeZone: "Europe/Kiev" })
+//       );
+//       localTime.setMinutes(localTime.getMinutes() + 60); // One hour ahead
 
-      console.log(localTime, localTime);
-      const events = await collection
-        .find({ dateStart: { $gte: localTime } })
-        // .find({ dateStart: { $lte: localTime } })
-        .toArray();
+//       console.log(localTime, localTime);
+//       const events = await collection
+//         .find({ dateStart: { $gte: localTime } })
+//         // .find({ dateStart: { $lte: localTime } })
+//         .toArray();
 
-      events.forEach((event) => {
-        if (!sentNotifications.has(event._id.toString())) {
-          console.log(event.dateStart);
-          const message = `reminders:  - ${event._id}, ${event.dateStart}`;
-          bot.sendMessage(chatId, message);
+//       events.forEach((event) => {
+//         if (!sentNotifications.has(event._id.toString())) {
+//           console.log(event.dateStart);
+//           const message = `reminders:  - ${event._id}, ${event.dateStart}`;
+//           bot.sendMessage(chatId, message);
 
-          sentNotifications.add(event._id.toString());
-        }
-      });
-    });
-  })
-  .catch((err) => console.log("DB error:", err));
+//           sentNotifications.add(event._id.toString());
+//         }
+//       });
+//     });
+//   })
+//   .catch((err) => console.log("DB error:", err));
 
 const app = express();
 const PORT = 9999;
@@ -137,6 +140,8 @@ app.get("/", (req, res) => {
   <html>`);
 });
 
+app.use("/events", router);
+
 app.get(`/jobs`, getAll);
 app.get(`/jobs/:id`, getOneWork);
 app.post(`/jobs`, createWork);
@@ -161,32 +166,32 @@ app.listen(PORT, (err) => {
   console.log(`Server OK! http://localhost:${PORT}/`);
 });
 
-const token = process.env.TOKEN;
-const bot = new TelegramBot(token, { polling: true });
+// const token = process.env.TOKEN;
+// const bot = new TelegramBot(token, { polling: true });
 
-bot.onText(/\/start/, (msg) => {
-  const chatId = msg.chat.id;
-  bot.sendMessage(chatId, "Hello world!");
-});
+// bot.onText(/\/start/, (msg) => {
+//   const chatId = msg.chat.id;
+//   bot.sendMessage(chatId, "Hello world!");
+// });
 
-function sendNotification(chatId, message) {
-  bot.sendMessage(chatId, message);
-}
+// function sendNotification(chatId, message) {
+//   bot.sendMessage(chatId, message);
+// }
 
-function scheduleNotification(chatId, message, date) {
-  const now = new Date();
-  const targetDate = new Date(date);
+// function scheduleNotification(chatId, message, date) {
+//   const now = new Date();
+//   const targetDate = new Date(date);
 
-  const timeDiff = targetDate - now;
+//   const timeDiff = targetDate - now;
 
-  if (timeDiff > 0) {
-    setTimeout(() => {
-      sendNotification(chatId, message);
-    }, timeDiff);
-  } else {
-    console.log("The specified date and time have already passed.");
-  }
-}
+//   if (timeDiff > 0) {
+//     setTimeout(() => {
+//       sendNotification(chatId, message);
+//     }, timeDiff);
+//   } else {
+//     console.log("The specified date and time have already passed.");
+//   }
+// }
 
 // sendNotification(chatId, "application development");
 
