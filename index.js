@@ -32,58 +32,58 @@ const {
   getOneSalary,
 } = require("./controllers/SalaryControllers");
 
-const chatId = process.env.CHAT_ID;
-const sentNotifications = new Set();
+// const chatId = process.env.CHAT_ID;
+// const sentNotifications = new Set();
 
-const token = process.env.TOKEN;
-const bot = new TelegramBot(token, { polling: true });
+// const token = process.env.TOKEN;
+// const bot = new TelegramBot(token, { polling: true });
 
-bot.setMyCommands([{ command: "/start", description: "start app" }]);
+// bot.setMyCommands([{ command: "/start", description: "start app" }]);
 
-bot.on("message", async (msg) => {
-  const text = msg.text;
+// bot.on("message", async (msg) => {
+//   const text = msg.text;
 
-  if (text === "/start") {
-    await bot.sendMessage(chatId, `Hello ${msg.from.first_name}!`);
-  }
-  if (text === "hi") {
-    await bot.sendMessage(chatId, `Hello ${msg.from.first_name}!`);
-  }
-  // bot.sendMessage(chatId, `your message: ${text}`);
-});
+//   if (text === "/start") {
+//     await bot.sendMessage(chatId, `Hello ${msg.from.first_name}!`);
+//   }
+//   if (text === "hi") {
+//     await bot.sendMessage(chatId, `Hello ${msg.from.first_name}!`);
+//   }
+//   // bot.sendMessage(chatId, `your message: ${text}`);
+// });
 
 mongoose
   .connect(process.env.MONGODB_URI, { useNewUrlParser: true })
   .then((client) => {
     console.log("DB OK!");
 
-    const db = client.connection;
-    const collection = db.collection("events");
+    // const db = client.connection;
+    // const collection = db.collection("events");
 
     // Run a schedule that will check the databases every minute
-    const runScheduledTask = schedule.scheduleJob("*/1 * * * *", async () => {
-      const utcTime = new Date();
-      const localTime = new Date(
-        utcTime.toLocaleString("en-US", { timeZone: "Europe/Kiev" })
-      );
-      localTime.setMinutes(localTime.getMinutes() + 60); // One hour ahead
+    // const runScheduledTask = schedule.scheduleJob("*/1 * * * *", async () => {
+    //   const utcTime = new Date();
+    //   const localTime = new Date(
+    //     utcTime.toLocaleString("en-US", { timeZone: "Europe/Kiev" })
+    //   );
+    //   localTime.setMinutes(localTime.getMinutes() + 60); // One hour ahead
 
-      console.log(localTime, localTime);
-      const events = await collection
-        .find({ dateStart: { $gte: localTime } })
-        // .find({ dateStart: { $lte: localTime } })
-        .toArray();
+    //   console.log(localTime, localTime);
+    //   const events = await collection
+    //     .find({ dateStart: { $gte: localTime } })
+    //     // .find({ dateStart: { $lte: localTime } })
+    //     .toArray();
 
-      events.forEach((event) => {
-        if (!sentNotifications.has(event._id.toString())) {
-          console.log(event.dateStart);
-          const message = `reminders:  - ${event._id}, ${event.dateStart}`;
-          bot.sendMessage(chatId, message);
+    //   events.forEach((event) => {
+    //     if (!sentNotifications.has(event._id.toString())) {
+    //       console.log(event.dateStart);
+    //       const message = `reminders:  - ${event._id}, ${event.dateStart}`;
+    //       bot.sendMessage(chatId, message);
 
-          sentNotifications.add(event._id.toString());
-        }
-      });
-    });
+    //       sentNotifications.add(event._id.toString());
+    //     }
+    //   });
+    // });
   })
   .catch((err) => console.log("DB error:", err));
 
@@ -154,41 +154,41 @@ app.get("/", (req, res) => {
   <html>`);
 });
 
-const db = mongoose.connection;
-app.get("/events", async (req, res) => {
-  try {
-    const collection = db.collection("events");
+// const db = mongoose.connection;
+// app.get("/events", async (req, res) => {
+//   try {
+//     const collection = db.collection("events");
 
-    const utcTime = new Date();
-    const localTime = new Date(
-      utcTime.toLocaleString("en-US", { timeZone: "Europe/Kiev" })
-    );
-    localTime.setMinutes(localTime.getMinutes() + 60); // One hour ahead
+//     const utcTime = new Date();
+//     const localTime = new Date(
+//       utcTime.toLocaleString("en-US", { timeZone: "Europe/Kiev" })
+//     );
+//     localTime.setMinutes(localTime.getMinutes() + 60); // One hour ahead
 
-    localTime.setSeconds(0);
+//     localTime.setSeconds(0);
 
-    const events = await collection
-      .find({
-        dateStart: {
-          $gte: localTime,
-          $lte: new Date(localTime.getTime() + 1000),
-        },
-      })
-      .toArray();
+//     const events = await collection
+//       .find({
+//         dateStart: {
+//           $gte: localTime,
+//           $lte: new Date(localTime.getTime() + 1000),
+//         },
+//       })
+//       .toArray();
 
-    events.forEach((event) => {
-      const message = `text wrote bot:  - ${event._id}, ${event.title}`;
-      console.log(message);
-      bot.sendMessage(chatId, message);
-    });
+//     events.forEach((event) => {
+//       const message = `text wrote bot:  - ${event._id}, ${event.title}`;
+//       console.log(message);
+//       bot.sendMessage(chatId, message);
+//     });
 
-    res.status(200).send("Task executed successfully");
-    console.log(localTime);
-  } catch (error) {
-    console.error("Error executing the task:", error);
-    res.status(500).send("Internal Server Error");
-  }
-});
+//     res.status(200).send("Task executed successfully");
+//     console.log(localTime);
+//   } catch (error) {
+//     console.error("Error executing the task:", error);
+//     res.status(500).send("Internal Server Error");
+//   }
+// });
 
 app.get(`/jobs`, getAll);
 app.get(`/jobs/:id`, getOneWork);
