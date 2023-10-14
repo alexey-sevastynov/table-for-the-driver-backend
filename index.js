@@ -4,8 +4,6 @@
 // 4. npm i mongoose
 // 5. npm i dotenv . Hide password the cluster, mongodb
 
-const router = require("./eventsRouter");
-
 const express = require("express");
 const mongoose = require("mongoose");
 require("dotenv").config();
@@ -13,8 +11,6 @@ const cors = require("cors");
 
 const TelegramBot = require("node-telegram-bot-api");
 const schedule = require("node-schedule");
-
-const https = require("https");
 
 const {
   getAll,
@@ -41,6 +37,20 @@ const sentNotifications = new Set();
 
 const token = process.env.TOKEN;
 const bot = new TelegramBot(token, { polling: true });
+
+bot.setMyCommands([{ command: "/start", description: "start app" }]);
+
+bot.on("message", async (msg) => {
+  const text = msg.text;
+
+  if (text === "/start") {
+    await bot.sendMessage(chatId, `Hello ${msg.from.first_name}!`);
+  }
+  if (text === "hi") {
+    await bot.sendMessage(chatId, `Hello ${msg.from.first_name}!`);
+  }
+  // bot.sendMessage(chatId, `your message: ${text}`);
+});
 
 mongoose
   .connect(process.env.MONGODB_URI, { useNewUrlParser: true })
@@ -144,7 +154,6 @@ app.get("/", (req, res) => {
   <html>`);
 });
 
-// app.use("/events", router);
 const db = mongoose.connection;
 app.get("/events", async (req, res) => {
   try {
@@ -167,14 +176,6 @@ app.get("/events", async (req, res) => {
       })
       .toArray();
 
-    // events.forEach((event) => {
-    //   if (!sentNotifications.has(event._id.toString())) {
-    //     const message = `reminders:  - ${event._id}, ${event.dateStart}`;
-    //     console.log(message);
-    //     bot.sendMessage(chatId, message);
-    //     sentNotifications.add(event._id.toString());
-    //   }
-    // });
     events.forEach((event) => {
       const message = `text wrote bot:  - ${event._id}, ${event.title}`;
       console.log(message);
