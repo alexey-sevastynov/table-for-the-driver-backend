@@ -32,6 +32,12 @@ const {
   getOneSalary,
 } = require("./controllers/SalaryControllers");
 
+const {
+  getAllEvents,
+  createEvent,
+  removeEvent,
+} = require("./controllers/EventControllers");
+
 // const chatId = process.env.CHAT_ID;
 // const sentNotifications = new Set();
 
@@ -189,6 +195,10 @@ app.get("/", (req, res) => {
 //     res.status(500).send("Internal Server Error");
 //   }
 // });
+
+app.get("/events", getAllEvents);
+app.post("/events", createEvent);
+app.delete("/events/:id", removeEvent);
 
 app.get(`/jobs`, getAll);
 app.get(`/jobs/:id`, getOneWork);
